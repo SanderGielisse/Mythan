@@ -114,7 +114,7 @@ public class PopulationManager {
 			double breedsAllowed = Math.floor(sp.getAverageFitness() / sum * totalSize) - 1.0;
 
 			if (breedsAllowed < 1) {
-				// System.out.println("Species was removed, breeds allowed < 1.");
+				System.out.println("Species was removed, breeds allowed < 1.");
 				it.remove();
 				continue;
 			}
@@ -210,7 +210,8 @@ public class PopulationManager {
 			// new genome, choose random weights
 			Genome genome = init.clone();
 			for (Gene gene : genome.getGenes()) { // genes are cloned as well
-				gene.setWeight(Random.random(-1, 1));
+				double dist = this.getCore().getSetting(Setting.MUTATION_WEIGHT_CHANCE_RANDOM_RANGE);
+				gene.setWeight(Random.random(-dist, dist));
 			}
 			// System.out.println("GENOME " + genome.toString());
 			this.getCore().getPopulationManager().getPopulation().addGenome(genome);
@@ -227,10 +228,11 @@ public class PopulationManager {
 		for (int i = 0; i < outputs.length; i++)
 			outputs[i] = inputs.length + i + 1;
 
+		double dist = this.getCore().getSetting(Setting.MUTATION_WEIGHT_CHANCE_RANDOM_RANGE);
 		Genome gen = new Genome(this.getCore(), null, inputs, outputs);
 		for (int in = 1; in <= this.getCore().getInputSize(); in++) {
 			for (int out = 1; out <= this.getCore().getOutputSize(); out++) {
-				gen.addGene(new Gene(this.getCore().getNextInnovationNumber(), in, this.getCore().getInputSize() + out, Random.random(-1, 1), true), null, null);
+				gen.addGene(new Gene(this.getCore().getNextInnovationNumber(), in, this.getCore().getInputSize() + out, Random.random(-dist, dist), true), null, null);
 			}
 		}
 		return gen;

@@ -79,19 +79,24 @@ public class XOR implements Runnable {
 		instance.setSetting(Setting.MUTATION_WEIGHT_RANDOM_CHANCE, 0.10);
 		instance.setSetting(Setting.MUTATION_WEIGHT_MAX_DISTURBANCE, 0.1);
 
-		instance.setSetting(Setting.MUTATION_NEW_CONNECTION_CHANCE, 0.005);
+		instance.setSetting(Setting.MUTATION_NEW_CONNECTION_CHANCE, 0.3);
 		instance.setSetting(Setting.MUTATION_NEW_NODE_CHANCE, 0.003);
 
 		instance.setSetting(Setting.DISTANCE_EXCESS_WEIGHT, 1.0);
 		instance.setSetting(Setting.DISTANCE_DISJOINT_WEIGHT, 1.0);
 		instance.setSetting(Setting.DISTANCE_WEIGHTS_WEIGHT, 0.4);
 
-		instance.setSetting(Setting.SPECIES_COMPATIBILTY_DISTANCE, 1.5); // the bigger the less species
-		instance.setSetting(Setting.MUTATION_WEIGHT_CHANCE_RANDOM_RANGE, 2.0); // -2.0 - 2.0
+		instance.setSetting(Setting.SPECIES_COMPATIBILTY_DISTANCE, 1.25); // the bigger the less species
+		instance.setSetting(Setting.MUTATION_WEIGHT_CHANCE_RANDOM_RANGE, 3); // -2.0 - 2.0
 
-		instance.setSetting(Setting.GENERATION_ELIMINATION_PERCENTAGE, 0.95);
+		instance.setSetting(Setting.GENERATION_ELIMINATION_PERCENTAGE, 0.85);
 		instance.setSetting(Setting.BREED_CROSS_CHANCE, 0.75);
 
-		instance.trainToFitness(1000, 15.8); // train to 15, best is 16 (4 * 4)
+		/**
+		 * Train to fitness of 15.5, best is 16 (4 * 4)
+		 * sqrt(15.5) = 3.94 so 4 - 3.94 = 0.06 total off
+		 * 0.06 off from total of 4 gives 1.5% error
+		 */
+		instance.trainToFitness(1000, 15.5);
 	}
 }
