@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package examples;
+package examples.xor;
 
 import nl.sandergielisse.mythan.CustomizedSigmoidActivation;
 import nl.sandergielisse.mythan.FitnessCalculator;
