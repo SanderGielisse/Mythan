@@ -15,12 +15,18 @@
  */
 package examples.car;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+
 public class Antenna {
 
+	private final CarLocation carLocation;
 	private final float angle;
 	private final int length;
 
-	public Antenna(float angle, int length) {
+	public Antenna(CarLocation carLocation, float angle, int length) {
+		this.carLocation = carLocation;
 		this.angle = angle;
 		this.length = length;
 	}
@@ -29,7 +35,38 @@ public class Antenna {
 		return angle;
 	}
 
-	public int getLength() {
+	public double getLength() {
 		return length;
+	}
+
+	public CarLocation getCarLocation() {
+		return carLocation;
+	}
+
+	public double getEndX() {
+		double startX = this.getCarLocation().getX();
+		double dx = this.getLength() * Math.cos(Math.toRadians(this.getAngle() + this.getCarLocation().getAngle()));
+		return startX + dx;
+	}
+
+	public double getEndY() {
+		double startY = this.getCarLocation().getY();
+		double dy = this.getLength() * Math.sin(Math.toRadians(this.getAngle() + this.getCarLocation().getAngle()));
+		return startY + dy;
+	}
+
+	public boolean isOnRoad(BufferedImage background) {
+		int x = (int) this.getEndX();
+		int y = (int) this.getEndY();
+
+		if (x < 0 || y < 0 || x >= background.getWidth() || y >= background.getHeight())
+			return false;
+
+		return background.getRGB(x, y) != Color.BLACK.getRGB();
+	}
+
+	public void draw(BufferedImage background, Graphics2D g2d) {
+		g2d.setColor(this.isOnRoad(background) ? Color.RED : Color.BLUE);
+		g2d.drawLine((int) this.getCarLocation().getX(), (int) this.getCarLocation().getY(), (int) this.getEndX(), (int) this.getEndY());
 	}
 }

@@ -15,7 +15,9 @@
  */
 package nl.sandergielisse.mythan;
 
-public interface FitnessCalculator {
+public abstract class FitnessCalculator {
 
-	public double getFitness(Network network);
+	public abstract double getFitness(Network network);
+
+	public void generationFinished(Network bestPerforming) {}
 }

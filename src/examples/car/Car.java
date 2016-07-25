@@ -86,7 +86,7 @@ public class Car extends JFrame implements Runnable {
 					}
 				}).start();
 			} else if (nextLine.equalsIgnoreCase("/ai")) {
-				new MythanTraining(getBackgroundImage());
+				new MythanTraining(this, getBackgroundImage()).start();
 			} else {
 				System.out.println("Unknown command " + nextLine + "...");
 				System.exit(0);

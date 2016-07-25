@@ -60,9 +60,11 @@ public class Frame extends JPanel {
 	}
 
 	private static final long serialVersionUID = 1L;
-	private double startX = 400;
-	private double startY = 460;
-	private final CarLocation location = new CarLocation(startX, startY, 0);
+	private CarLocation location = new CarLocation();
+
+	public void setLocation(CarLocation location) {
+		this.location = location;
+	}
 
 	private BufferedImage car;
 	{
@@ -79,7 +81,7 @@ public class Frame extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		drawStar(g);
+		draw(g);
 	}
 
 	@Override
@@ -87,7 +89,7 @@ public class Frame extends JPanel {
 		return new Dimension(800, 800);
 	}
 
-	private void drawStar(Graphics g) {
+	private void draw(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
 
 		g2d.drawImage(this.getBackgroundImage(), 0, 0, null);
@@ -99,22 +101,10 @@ public class Frame extends JPanel {
 
 		g2d.drawImage(this.car, (int) this.location.getX() - this.car.getWidth(null) / 2, (int) this.location.getY() - this.car.getHeight(null) / 2, null);
 		g2d.setTransform(old);
-	}
 
-	public double getStartX() {
-		return startX;
-	}
-
-	public void setStartX(double startX) {
-		this.startX = startX;
-	}
-
-	public double getStartY() {
-		return startY;
-	}
-
-	public void setStartY(double startY) {
-		this.startY = startY;
+		for (Antenna ant : this.getCarLocation().getAntennas()) {
+			ant.draw(this.getBackgroundImage(), g2d);
+		}
 	}
 
 	public BufferedImage getBackgroundImage() {

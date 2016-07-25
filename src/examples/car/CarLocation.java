@@ -27,10 +27,26 @@ public class CarLocation {
 	private float angle;
 	private final List<Antenna> antennas = new ArrayList<>();
 
+	private final static double startX = 400;
+	private final static double startY = 460;
+
+	public CarLocation() {
+		this(startX, startY, 0);
+	}
+
 	public CarLocation(double x, double y, float angle) {
 		this.x = x;
 		this.y = y;
 		this.angle = angle;
+
+		this.antennas.add(new Antenna(this, -60, 100));
+		this.antennas.add(new Antenna(this, 60, 100));
+
+		this.antennas.add(new Antenna(this, -70, 45));
+		this.antennas.add(new Antenna(this, 70, 45));
+
+		this.antennas.add(new Antenna(this, -50, 120));
+		this.antennas.add(new Antenna(this, 50, 120));
 	}
 
 	public List<Antenna> getAntennas() {
