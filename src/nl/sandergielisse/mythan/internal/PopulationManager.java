@@ -114,7 +114,7 @@ public class PopulationManager {
 			double breedsAllowed = Math.floor(sp.getAverageFitness() / sum * totalSize) - 1.0;
 
 			if (breedsAllowed < 1) {
-				System.out.println("Species was removed, breeds allowed < 1.");
+				// System.out.println("Species was removed, breeds allowed < 1.");
 				it.remove();
 				continue;
 			}

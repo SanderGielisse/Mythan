@@ -26,6 +26,10 @@ public class Antenna {
 	private final int length;
 
 	public Antenna(CarLocation carLocation, float angle, int length) {
+
+		if (length <= 0)
+			throw new IllegalArgumentException("Length must be positive");
+
 		this.carLocation = carLocation;
 		this.angle = angle;
 		this.length = length;

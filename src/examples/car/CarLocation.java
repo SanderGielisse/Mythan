@@ -39,14 +39,10 @@ public class CarLocation {
 		this.y = y;
 		this.angle = angle;
 
-		this.antennas.add(new Antenna(this, -60, 100));
-		this.antennas.add(new Antenna(this, 60, 100));
-
-		this.antennas.add(new Antenna(this, -70, 45));
-		this.antennas.add(new Antenna(this, 70, 45));
-
-		this.antennas.add(new Antenna(this, -50, 120));
-		this.antennas.add(new Antenna(this, 50, 120));
+		for (int i = 6; i < 14; i++) {
+			this.antennas.add(new Antenna(this, i * 7, 215 - i * 15));
+			this.antennas.add(new Antenna(this, -i * 7, 215 - i * 15));
+		}
 	}
 
 	public List<Antenna> getAntennas() {
@@ -95,5 +91,9 @@ public class CarLocation {
 
 	public boolean isAlive(BufferedImage background) {
 		return background.getRGB((int) this.x, (int) this.y) != Color.BLACK.getRGB();
+	}
+
+	public boolean isOnFinish(BufferedImage background) {
+		return background.getRGB((int) this.x, (int) this.y) == Color.RED.getRGB();
 	}
 }

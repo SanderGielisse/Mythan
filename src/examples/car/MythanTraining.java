@@ -43,6 +43,10 @@ public class MythanTraining {
 		car.setTitle("Mythan Driving Car Example (AI Powered)");
 	}
 
+	public void setTitle(String title) {
+		this.car.setTitle(title);
+	}
+
 	public void start() {
 		/**
 		 * The inputs are the X antenna's. When the antenna hits something,
@@ -55,13 +59,13 @@ public class MythanTraining {
 		 * 0.7 - 1.0 = steer right
 		 */
 
-		Mythan mythan = Mythan.newInstance(6, 1, new CustomizedSigmoidActivation(), new FitnessCalculator() {
+		Mythan mythan = Mythan.newInstance(new CarLocation().getAntennas().size(), 1, new CustomizedSigmoidActivation(), new FitnessCalculator() {
 
 			@Override
 			public double getFitness(Network network) {
 				CarLocation carLocation = new CarLocation();
 
-				double fitness = 0;
+				long ticksLived = 0;
 
 				do {
 					boolean rightClicked = false;
@@ -81,15 +85,31 @@ public class MythanTraining {
 						rightClicked = true;
 
 					carLocation.tick(rightClicked, leftClicked);
-					fitness += 0.01;
-				} while (carLocation.isAlive(MythanTraining.this.background) && fitness < 100);
+					ticksLived++;
+				} while (carLocation.isAlive(background) && !carLocation.isOnFinish(background));
+
+				// worst case 45 seconds
+
+				double secondsLived = ticksLived / 30D; // 30 ticks per second
+				double fitness = 45 - secondsLived;
+				if (!carLocation.isAlive(background)) {
+					fitness = 0;
+				}
 
 				return fitness * fitness;
 			}
 
+			private int generation = 1;
+
 			@Override
 			public void generationFinished(Network bestPerforming) {
-				System.out.println("Start");
+				this.generation++;
+
+				//if (this.generation++ < 25)
+				//	return;
+
+				setTitle("Mythan Driving Car Example (AI Powered) - Generation " + this.generation + " - Fitness " + bestPerforming.getFitness());
+
 				board.setLocation(new CarLocation());
 				while (true) {
 					try {
@@ -113,7 +133,7 @@ public class MythanTraining {
 
 						board.getCarLocation().tick(rightClicked, leftClicked);
 
-						if (!board.getCarLocation().isAlive(board.getBackgroundImage())) {
+						if (!board.getCarLocation().isAlive(board.getBackgroundImage()) || board.getCarLocation().isOnFinish(board.getBackgroundImage())) {
 							break;
 						}
 
@@ -122,7 +142,6 @@ public class MythanTraining {
 						e.printStackTrace();
 					}
 				}
-				System.out.println("End");
 			}
 		});
 
@@ -131,19 +150,19 @@ public class MythanTraining {
 		mythan.setSetting(Setting.MUTATION_WEIGHT_RANDOM_CHANCE, 0.10);
 		mythan.setSetting(Setting.MUTATION_WEIGHT_MAX_DISTURBANCE, 0.1);
 
-		mythan.setSetting(Setting.MUTATION_NEW_CONNECTION_CHANCE, 0.3);
+		mythan.setSetting(Setting.MUTATION_NEW_CONNECTION_CHANCE, 0.03);
 		mythan.setSetting(Setting.MUTATION_NEW_NODE_CHANCE, 0.05);
 
 		mythan.setSetting(Setting.DISTANCE_EXCESS_WEIGHT, 1.0);
 		mythan.setSetting(Setting.DISTANCE_DISJOINT_WEIGHT, 1.0);
 		mythan.setSetting(Setting.DISTANCE_WEIGHTS_WEIGHT, 0.4);
 
-		mythan.setSetting(Setting.SPECIES_COMPATIBILTY_DISTANCE, 1.25); // the bigger the less species
+		mythan.setSetting(Setting.SPECIES_COMPATIBILTY_DISTANCE, 0.75); // the bigger the less species
 		mythan.setSetting(Setting.MUTATION_WEIGHT_CHANCE_RANDOM_RANGE, 3); // -2.0 - 2.0
 
 		mythan.setSetting(Setting.GENERATION_ELIMINATION_PERCENTAGE, 0.85);
 		mythan.setSetting(Setting.BREED_CROSS_CHANCE, 0.75);
 
-		mythan.trainToFitness(250, Double.MAX_VALUE);
+		mythan.trainToFitness(1000, Double.MAX_VALUE);
 	}
 }
