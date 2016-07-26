@@ -39,9 +39,10 @@ public class CarLocation {
 		this.y = y;
 		this.angle = angle;
 
-		for (int i = 6; i < 14; i++) {
-			this.antennas.add(new Antenna(this, i * 7, 215 - i * 15));
-			this.antennas.add(new Antenna(this, -i * 7, 215 - i * 15));
+		this.antennas.add(new Antenna(this, 0));
+		for (int i = 1; i < 9; i++) {
+			this.antennas.add(new Antenna(this, i * 9));
+			this.antennas.add(new Antenna(this, -i * 9));
 		}
 	}
 
@@ -73,13 +74,13 @@ public class CarLocation {
 		this.angle = angle;
 	}
 
-	public void tick(boolean rightClicked, boolean leftClicked) {
-		// update the x and y using angle and speed
-		double dx = Car.CAR_SPEED * Math.cos(Math.toRadians(this.angle));
-		double dy = Car.CAR_SPEED * Math.sin(Math.toRadians(this.angle));
+	private static final double MAX_CAR_SPEED = 10;
+	private double currentSpeed = 4;
 
-		this.x += dx;
-		this.y += dy;
+	public void tick(boolean rightClicked, boolean leftClicked, double gasPercentage /*0 = no has, 0.5 = same speed , 1 = full gas*/) {
+
+		if (gasPercentage < 0 || gasPercentage > 1)
+			throw new IllegalArgumentException();
 
 		if (leftClicked) {
 			this.angle -= 3.5;
@@ -87,13 +88,37 @@ public class CarLocation {
 		if (rightClicked) {
 			this.angle += 3.5;
 		}
+
+		double gasChange = (gasPercentage - 0.5) * 0.3D;
+		this.currentSpeed += gasChange;
+
+		if (this.currentSpeed < 4) {
+			this.currentSpeed = 4;
+		}
+
+		if (this.currentSpeed > MAX_CAR_SPEED)
+			this.currentSpeed = MAX_CAR_SPEED;
+
+		// update the x and y using angle and speed
+		double dx = this.currentSpeed * Math.cos(Math.toRadians(this.angle));
+		double dy = this.currentSpeed * Math.sin(Math.toRadians(this.angle));
+
+		this.x += dx;
+		this.y += dy;
+
+		// System.out.println("X " + x);
+		// System.out.println("Y " + y);
 	}
 
 	public boolean isAlive(BufferedImage background) {
-		return background.getRGB((int) this.x, (int) this.y) != Color.BLACK.getRGB();
+		return background.getRGB((int) this.x, (int) this.y) == Antenna.ROAD_COLOR.getRGB() || background.getRGB((int) this.x, (int) this.y) == Color.RED.getRGB();
 	}
 
 	public boolean isOnFinish(BufferedImage background) {
 		return background.getRGB((int) this.x, (int) this.y) == Color.RED.getRGB();
+	}
+
+	public double getCurrentSpeed() {
+		return this.currentSpeed / MAX_CAR_SPEED; // scale
 	}
 }

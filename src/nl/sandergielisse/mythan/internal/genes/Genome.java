@@ -37,6 +37,13 @@ import nl.sandergielisse.mythan.internal.Species;
 
 public class Genome implements Cloneable, Network {
 
+	private static int counter = 0;
+	private final int id = counter++;
+
+	public int getId() {
+		return id;
+	}
+
 	/**
 	 * The TreeMap will make sure the genes are always ordered by increasing innovation number.
 	 */
@@ -60,6 +67,9 @@ public class Genome implements Cloneable, Network {
 	}
 
 	public void setSpecies(Species sp) {
+		if (this.fitness != -1)
+			throw new UnsupportedOperationException("setSpecies() must be called before getFitness()");
+
 		this.species = sp;
 	}
 
@@ -119,6 +129,9 @@ public class Genome implements Cloneable, Network {
 	}
 
 	public void addInputNode(int node) {
+		if (this.fitness != -1)
+			throw new UnsupportedOperationException("addInputNode() must be called before getFitness()");
+
 		if (this.inputNodes.contains(node))
 			throw new IllegalArgumentException();
 
@@ -126,6 +139,9 @@ public class Genome implements Cloneable, Network {
 	}
 
 	public void addOutputNode(int node) {
+		if (this.fitness != -1)
+			throw new UnsupportedOperationException("addOutputNode() must be called before getFitness()");
+
 		if (this.outputNodes.contains(node))
 			throw new IllegalArgumentException();
 
@@ -163,6 +179,10 @@ public class Genome implements Cloneable, Network {
 	}
 
 	public void addGene(Gene gene, Genome parent1, Genome parent2) {
+
+		if (this.fitness != -1)
+			throw new UnsupportedOperationException("addGene() must be called before getFitness()");
+
 		if (this.genes.containsKey(gene.getInnovationNumber())) {
 			System.out.println("TMP " + this.toString());
 			throw new UnsupportedOperationException("Genome already has gene with innovation number " + gene.getInnovationNumber());
@@ -265,6 +285,10 @@ public class Genome implements Cloneable, Network {
 	 * innovation numbers, we replace it.
 	 */
 	public void fixDuplicates() {
+
+		if (this.fitness != -1)
+			throw new UnsupportedOperationException("fixDuplicates() must be called before getFitness()");
+
 		for (Species sp : this.getCore().getPopulationManager().getPopulation().getSpecies()) {
 			for (Genome genome : sp.getMembers()) {
 				List<Connection> conA = this.getAllConnections();
@@ -454,14 +478,14 @@ public class Genome implements Cloneable, Network {
 
 	@Override
 	public double[] calculate(double[] input) {
-		BackTraceTask task = new BackTraceTask(this, this.core.getActivationFunction(), input);
-		return task.calculateOutput();
+		return new BackTraceTask(this, this.core.getActivationFunction(), input).calculateOutput();
 	}
 
 	private double fitness = -1;
 
 	public double calculateFitness() {
 		this.fitness = this.core.getFitnessCalculator().getFitness(this);
+
 		if (this.fitness > this.getSpecies().getHighestFitness()) {
 			this.getSpecies().setHighestFitness(this.fitness);
 		}
@@ -473,7 +497,10 @@ public class Genome implements Cloneable, Network {
 	 * or -1 if calculateFitness() hasn't been called yet.
 	 */
 	public double getFitness() {
-		return fitness;
+		if (this.fitness == -1)
+			return calculateFitness();
+
+		return this.fitness;
 	}
 
 	/**

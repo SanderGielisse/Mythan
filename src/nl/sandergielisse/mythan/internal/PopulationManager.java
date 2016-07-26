@@ -156,7 +156,6 @@ public class PopulationManager {
 		/**
 		 * Fill the population with new children.
 		 */
-		// TODO fix small species having no chance to survive this
 		while (populationSize < this.populationSize) {
 			Species randomSpecies = Random.random(this.getSpecies());
 			Set<Genome> oldMems = oldMembers.get(randomSpecies);
@@ -170,7 +169,7 @@ public class PopulationManager {
 					Genome.crossAndAdd(father, mother);
 				} else {
 					// don't cross just copy
-					Genome g = Random.random(oldMems);
+					Genome g = Random.random(oldMems).clone();
 					g.mutate();
 					randomSpecies.getMembers().add(g);
 				}
@@ -194,7 +193,8 @@ public class PopulationManager {
 		 * Display how the new population performed.
 		 */
 		this.latestFitness = this.currentPopulation.getBestPerforming();
-		System.out.println("Best performing genome had fitness of " + this.latestFitness.getFitness() + " and was part of species " + this.latestFitness.getSpecies().getId() + " which has " + this.latestFitness.getSpecies().getMembers().size() + " members");
+
+		System.out.println("Best performing genome [" + this.latestFitness.getId() + "] had fitness of " + this.latestFitness.getFitness() + " and was part of species " + this.latestFitness.getSpecies().getId() + " which has " + this.latestFitness.getSpecies().getMembers().size() + " members");
 		System.out.println(this.latestFitness.toString());
 	}
 

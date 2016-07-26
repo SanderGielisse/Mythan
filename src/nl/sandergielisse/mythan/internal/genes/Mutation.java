@@ -84,7 +84,7 @@ public class Mutation {
 				do {
 					{
 						if (attempts++ > 40)
-							throw new MutationFailedException("New connection could not be created after 100 attempts.");
+							throw new MutationFailedException("New connection could not be created after 40 attempts.");
 					}
 
 					int from = Random.random(this.genome.getNodes(true, true, false));

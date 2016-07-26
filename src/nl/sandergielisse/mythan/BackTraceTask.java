@@ -59,9 +59,6 @@ public class BackTraceTask {
 		return out;
 	}
 
-	/*
-	 * TODO make a cache
-	 */
 	private double getOutput(int node, Map<Integer, Double> cache) {
 
 		Double val = cache.get(node);

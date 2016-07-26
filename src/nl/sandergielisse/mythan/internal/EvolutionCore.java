@@ -108,7 +108,6 @@ public class EvolutionCore implements Mythan {
 		while (true) {
 			this.populationManager.newGeneration();
 			Genome best = this.populationManager.getLatestFitness();
-
 			this.getFitnessCalculator().generationFinished(best);
 
 			if (best.getFitness() >= targetFitness) {

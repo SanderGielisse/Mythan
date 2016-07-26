@@ -28,10 +28,7 @@ public class Car extends JFrame implements Runnable {
 		new Car().run();
 	}
 
-	public static final double CAR_SPEED = 4;
 	private static final long serialVersionUID = 1L;
-	private Frame board;
-
 	private BufferedImage background;
 	{
 		try {
@@ -47,50 +44,29 @@ public class Car extends JFrame implements Runnable {
 
 	@Override
 	public void run() {
-		System.out.println("What would you like to do? Use /play to play yourself or use /ai if you'd like Mythan to train.");
+		System.out.println("Enter the preview interval please...");
 
 		Scanner input = new Scanner(System.in);
 		while (input.hasNextLine()) {
 			String nextLine = input.nextLine();
 
+			input.close();
 			/**
 			 * User wants to play him/herself.
 			 */
-			if (nextLine.equalsIgnoreCase("/play")) {
-				this.add(this.board = new Frame(Car.this));
-				this.pack();
-				this.setLocationRelativeTo(null);
-				this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				this.setVisible(true);
-				this.setTitle("Mythan Driving Car Example");
+			int interval = -1;
 
-				new Thread(new Runnable() {
-
-					@Override
-					public void run() {
-						while (true) {
-							try {
-								Thread.sleep((long) (1000D / 30D)); // 30 FPS
-
-								board.getCarLocation().tick(board.isRightPressed(), board.isLeftPressed());
-
-								if (!board.getCarLocation().isAlive(board.getBackgroundImage())) {
-									System.exit(0);
-								}
-
-								repaint();
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-						}
-					}
-				}).start();
-			} else if (nextLine.equalsIgnoreCase("/ai")) {
-				new MythanTraining(this, getBackgroundImage()).start();
-			} else {
-				System.out.println("Unknown command " + nextLine + "...");
-				System.exit(0);
+			try {
+				interval = Integer.parseInt(nextLine);
+			} catch (NumberFormatException e) {
+				System.out.println(nextLine + " is not a number.");
+				System.exit(1);
 			}
+
+			if (interval == -1)
+				throw new AssertionError();
+
+			new MythanTraining(this, getBackgroundImage(), interval).start();
 		}
 		input.close();
 	}

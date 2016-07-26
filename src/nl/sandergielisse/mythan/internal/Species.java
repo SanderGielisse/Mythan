@@ -97,7 +97,6 @@ public class Species {
 
 		for (Genome genome : this.members) {
 			bestPerforming.add(genome);
-			genome.calculateFitness();
 		}
 		Collections.sort(bestPerforming, new GenomeSorter());
 

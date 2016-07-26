@@ -30,10 +30,12 @@ public class MythanTraining {
 	private final BufferedImage background;
 	private final Car car;
 	private Frame board;
+	private final int interval;
 
-	public MythanTraining(Car car, BufferedImage background) {
+	public MythanTraining(Car car, BufferedImage background, int interval) {
 		this.background = background;
 		this.car = car;
+		this.interval = interval;
 
 		car.add(this.board = new Frame(MythanTraining.this.car));
 		car.pack();
@@ -41,6 +43,7 @@ public class MythanTraining {
 		car.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		car.setVisible(true);
 		car.setTitle("Mythan Driving Car Example (AI Powered)");
+		car.setResizable(false);
 	}
 
 	public void setTitle(String title) {
@@ -59,24 +62,33 @@ public class MythanTraining {
 		 * 0.7 - 1.0 = steer right
 		 */
 
-		Mythan mythan = Mythan.newInstance(new CarLocation().getAntennas().size(), 1, new CustomizedSigmoidActivation(), new FitnessCalculator() {
+		Mythan mythan = Mythan.newInstance(new CarLocation().getAntennas().size() + 1, 2, new CustomizedSigmoidActivation(), new FitnessCalculator() {
 
 			@Override
 			public double getFitness(Network network) {
+
 				CarLocation carLocation = new CarLocation();
 
 				long ticksLived = 0;
 
-				do {
+				while (carLocation.isAlive(background) && !carLocation.isOnFinish(background)) {
 					boolean rightClicked = false;
 					boolean leftClicked = false;
 
-					double[] inputs = new double[carLocation.getAntennas().size()];
-					for (int i = 0; i < carLocation.getAntennas().size(); i++) {
-						inputs[i] = (carLocation.getAntennas().get(i).isOnRoad(background) ? 1.0 : 0.0);
-					}
+					double[] inputs = new double[carLocation.getAntennas().size() + 1];
 
-					double output = network.calculate(inputs)[0];
+					for (int i = 0; i < carLocation.getAntennas().size(); i++) {
+						Antenna ant = carLocation.getAntennas().get(i);
+						double len = ant.getFreeDistance(background);
+						if (len > 200)
+							len = 200;
+						inputs[i] = len / 200D;
+					}
+					inputs[inputs.length - 1] = carLocation.getCurrentSpeed();
+
+					double[] ans = network.calculate(inputs);
+					double output = ans[0];
+					double speed = ans[1];
 
 					if (output >= 0 && output <= 0.3)
 						leftClicked = true;
@@ -84,16 +96,22 @@ public class MythanTraining {
 					if (output >= 0.7 && output <= 1)
 						rightClicked = true;
 
-					carLocation.tick(rightClicked, leftClicked);
+					carLocation.tick(rightClicked, leftClicked, speed);
 					ticksLived++;
-				} while (carLocation.isAlive(background) && !carLocation.isOnFinish(background));
+				}
 
-				// worst case 45 seconds
-
+				/**
+				 * First 50 fitness is for actually making it (0-100%), rest is for speed.
+				 */
+				double fitness = 0;
 				double secondsLived = ticksLived / 30D; // 30 ticks per second
-				double fitness = 45 - secondsLived;
-				if (!carLocation.isAlive(background)) {
-					fitness = 0;
+
+				if (secondsLived > 45)
+					throw new RuntimeException();
+
+				if (carLocation.isOnFinish(background)) {
+					// we finished
+					fitness = (45 - secondsLived);
 				}
 
 				return fitness * fitness;
@@ -105,8 +123,12 @@ public class MythanTraining {
 			public void generationFinished(Network bestPerforming) {
 				this.generation++;
 
-				//if (this.generation++ < 25)
-				//	return;
+				if (this.getFitness(bestPerforming) != bestPerforming.getFitness())
+					throw new AssertionError();
+
+				if (interval != 0 && !(this.generation % interval == 0)) {
+					return;
+				}
 
 				setTitle("Mythan Driving Car Example (AI Powered) - Generation " + this.generation + " - Fitness " + bestPerforming.getFitness());
 
@@ -118,12 +140,19 @@ public class MythanTraining {
 						boolean rightClicked = false;
 						boolean leftClicked = false;
 
-						double[] inputs = new double[board.getCarLocation().getAntennas().size()];
+						double[] inputs = new double[board.getCarLocation().getAntennas().size() + 1];
 						for (int i = 0; i < board.getCarLocation().getAntennas().size(); i++) {
-							inputs[i] = (board.getCarLocation().getAntennas().get(i).isOnRoad(background) ? 1.0 : 0.0);
+							Antenna ant = board.getCarLocation().getAntennas().get(i);
+							double len = ant.getFreeDistance(background);
+							if (len > 200)
+								len = 200;
+							inputs[i] = len / 200D;
 						}
+						inputs[inputs.length - 1] = board.getCarLocation().getCurrentSpeed();
 
-						double output = bestPerforming.calculate(inputs)[0];
+						double[] ans = bestPerforming.calculate(inputs);
+						double output = ans[0];
+						double speed = ans[1];
 
 						if (output >= 0 && output <= 0.3)
 							leftClicked = true;
@@ -131,9 +160,15 @@ public class MythanTraining {
 						if (output >= 0.7 && output <= 1)
 							rightClicked = true;
 
-						board.getCarLocation().tick(rightClicked, leftClicked);
+						board.getCarLocation().tick(rightClicked, leftClicked, speed);
 
-						if (!board.getCarLocation().isAlive(board.getBackgroundImage()) || board.getCarLocation().isOnFinish(board.getBackgroundImage())) {
+						if (!board.getCarLocation().isAlive(board.getBackgroundImage())) {
+							// restart
+							board.setLocation(new CarLocation());
+							continue;
+						}
+
+						if (board.getCarLocation().isOnFinish(board.getBackgroundImage())) {
 							break;
 						}
 
@@ -157,7 +192,7 @@ public class MythanTraining {
 		mythan.setSetting(Setting.DISTANCE_DISJOINT_WEIGHT, 1.0);
 		mythan.setSetting(Setting.DISTANCE_WEIGHTS_WEIGHT, 0.4);
 
-		mythan.setSetting(Setting.SPECIES_COMPATIBILTY_DISTANCE, 0.75); // the bigger the less species
+		mythan.setSetting(Setting.SPECIES_COMPATIBILTY_DISTANCE, 0.8); // the bigger the less species
 		mythan.setSetting(Setting.MUTATION_WEIGHT_CHANCE_RANDOM_RANGE, 3); // -2.0 - 2.0
 
 		mythan.setSetting(Setting.GENERATION_ELIMINATION_PERCENTAGE, 0.85);

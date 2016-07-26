@@ -19,11 +19,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -34,28 +34,7 @@ public class Frame extends JPanel {
 
 	public Frame(Car car) {
 		this.carObject = car;
-
-		this.addKeyListener(new KeyAdapter() {
-
-			@Override
-			public void keyPressed(KeyEvent e) {
-				int key = e.getKeyCode();
-				if (key == KeyEvent.VK_LEFT)
-					leftPressed = true;
-				if (key == KeyEvent.VK_RIGHT)
-					rightPressed = true;
-			}
-
-			@Override
-			public void keyReleased(KeyEvent e) {
-				int key = e.getKeyCode();
-				if (key == KeyEvent.VK_LEFT)
-					leftPressed = false;
-				if (key == KeyEvent.VK_RIGHT)
-					rightPressed = false;
-			}
-		});
-		setBackground(Color.PINK);
+		setBackground(Color.BLACK);
 		setFocusable(true);
 	}
 
@@ -74,9 +53,6 @@ public class Frame extends JPanel {
 			e.printStackTrace();
 		}
 	}
-
-	private boolean leftPressed = false;
-	private boolean rightPressed = false;
 
 	@Override
 	public void paintComponent(Graphics g) {
@@ -105,6 +81,15 @@ public class Frame extends JPanel {
 		for (Antenna ant : this.getCarLocation().getAntennas()) {
 			ant.draw(this.getBackgroundImage(), g2d);
 		}
+
+		g2d.setColor(Color.WHITE);
+
+		g2d.setFont(g2d.getFont().deriveFont(20F));
+		g2d.drawString("Speed " + round(this.getCarLocation().getCurrentSpeed() * 100, 3) + "%", 10, 25);
+	}
+
+	public static double round(double value, int places) {
+		return new BigDecimal(value).setScale(places, RoundingMode.HALF_UP).doubleValue();
 	}
 
 	public BufferedImage getBackgroundImage() {
@@ -117,22 +102,6 @@ public class Frame extends JPanel {
 
 	public void setCar(BufferedImage car) {
 		this.car = car;
-	}
-
-	public boolean isLeftPressed() {
-		return leftPressed;
-	}
-
-	public void setLeftPressed(boolean leftPressed) {
-		this.leftPressed = leftPressed;
-	}
-
-	public boolean isRightPressed() {
-		return rightPressed;
-	}
-
-	public void setRightPressed(boolean rightPressed) {
-		this.rightPressed = rightPressed;
 	}
 
 	public CarLocation getCarLocation() {
