@@ -50,10 +50,11 @@ public class BackTraceTask {
 		/**
 		 * This is a feed backward so we start at the output nodes and trace back.
 		 */
+		Map<Integer, Double> cache = new HashMap<>();
 		int c = 0;
 		double[] out = new double[this.genome.getOutputNodes().size()];
 		for (int output : this.genome.getOutputNodes()) {
-			out[c++] = this.getOutput(output);
+			out[c++] = this.getOutput(output, cache);
 		}
 		return out;
 	}
@@ -61,7 +62,12 @@ public class BackTraceTask {
 	/*
 	 * TODO make a cache
 	 */
-	private double getOutput(int node) {
+	private double getOutput(int node, Map<Integer, Double> cache) {
+
+		Double val = cache.get(node);
+		if (val != null)
+			return val;
+
 		/**
 		 * Start by getting the summed input.
 		 */
@@ -74,7 +80,7 @@ public class BackTraceTask {
 					sum += this.nodeInputValues.get(gene.getFrom()) * gene.getWeight();
 				} else {
 					// we have to dig deeper to find the source
-					sum += this.getOutput(gene.getFrom()) * gene.getWeight();
+					sum += this.getOutput(gene.getFrom(), cache) * gene.getWeight();
 				}
 			}
 		}
@@ -82,6 +88,8 @@ public class BackTraceTask {
 		/**
 		 * Apply our activation function.
 		 */
-		return this.function.activate(sum);
+		double d = this.function.activate(sum);
+		cache.put(node, d);
+		return d;
 	}
 }
