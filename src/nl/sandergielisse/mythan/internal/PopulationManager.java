@@ -100,7 +100,6 @@ public class PopulationManager {
 			sp.setFailedGenerations(sp.getFailedGenerations() + 1);
 
 			if (sp.getFailedGenerations() > 15) {
-				// remove sp
 				System.out.println("Species was removed, because it failed for 15 generations.");
 				it.remove();
 				continue;
@@ -131,7 +130,7 @@ public class PopulationManager {
 			for (Species sp : this.getSpecies()) {
 				size += sp.getMembers().size();
 			}
-			System.out.println("Building generation " + this.currentGeneration + " now " + this.getSpecies().size() + " species active now size " + size + ".");
+			System.out.println("Building generation " + this.currentGeneration + "... Now " + this.getSpecies().size() + " species active (with a total size of " + size + ").");
 		}
 
 		if (this.getSpecies().isEmpty()) {
@@ -216,7 +215,6 @@ public class PopulationManager {
 			// System.out.println("GENOME " + genome.toString());
 			this.getCore().getPopulationManager().getPopulation().addGenome(genome);
 		}
-		// System.out.println("Initial population size is " + this.getCore().getPopulationManager().getCurrentPopulation().getLivingGenomes().size());
 	}
 
 	private Genome initial() {

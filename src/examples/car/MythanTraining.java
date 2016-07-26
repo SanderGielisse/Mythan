@@ -193,7 +193,7 @@ public class MythanTraining {
 		mythan.setSetting(Setting.DISTANCE_WEIGHTS_WEIGHT, 0.4);
 
 		mythan.setSetting(Setting.SPECIES_COMPATIBILTY_DISTANCE, 0.8); // the bigger the less species
-		mythan.setSetting(Setting.MUTATION_WEIGHT_CHANCE_RANDOM_RANGE, 3); // -2.0 - 2.0
+		mythan.setSetting(Setting.MUTATION_WEIGHT_CHANCE_RANDOM_RANGE, 3);
 
 		mythan.setSetting(Setting.GENERATION_ELIMINATION_PERCENTAGE, 0.85);
 		mythan.setSetting(Setting.BREED_CROSS_CHANCE, 0.75);

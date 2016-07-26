@@ -184,7 +184,7 @@ public class Genome implements Cloneable, Network {
 			throw new UnsupportedOperationException("addGene() must be called before getFitness()");
 
 		if (this.genes.containsKey(gene.getInnovationNumber())) {
-			System.out.println("TMP " + this.toString());
+			System.out.println(this.toString());
 			throw new UnsupportedOperationException("Genome already has gene with innovation number " + gene.getInnovationNumber());
 		}
 
@@ -206,7 +206,6 @@ public class Genome implements Cloneable, Network {
 		}
 
 		this.genes.put(gene.getInnovationNumber(), gene); // clone it so we are sure we have a new instance
-		// System.out.println("ADDED " + gene.getInnovationNumber());
 	}
 
 	public Collection<Gene> getGenes() {
@@ -295,8 +294,6 @@ public class Genome implements Cloneable, Network {
 				List<Connection> conB = genome.getAllConnections();
 
 				if (ArrayUtils.equals(conB, conA)) {
-					// give this class the same innovation numbers as genome
-
 					Iterator<Gene> toCloneFrom = new ArrayList<>(genome.genes.values()).iterator();
 					Iterator<Gene> toReplace = new ArrayList<>(this.genes.values()).iterator();
 
@@ -310,14 +307,9 @@ public class Genome implements Cloneable, Network {
 						Gene old = this.genes.remove(oldInno);
 						old.setInnovationNumber(changeTo);
 						this.genes.put(old.getInnovationNumber(), old);
-						// to.setInnovationNumber(from.getInnovationNumber());
 					}
 					if (toCloneFrom.hasNext() || toReplace.hasNext())
 						throw new AssertionError();
-
-					// System.out.println("Fixed duplicate for follow two genomes");
-					// System.out.println("" + this);
-					// System.out.println("" + genome);
 					return;
 				}
 			}
@@ -461,12 +453,7 @@ public class Genome implements Cloneable, Network {
 		}
 
 		double averageWeightDistance = total / size;
-
 		double n = longest.getGenes().size();
-		//if (n < 20) {
-		//	n = 1;
-		//}
-
 		double c1 = a.getCore().getSetting(Setting.DISTANCE_EXCESS_WEIGHT);
 		double c2 = a.getCore().getSetting(Setting.DISTANCE_DISJOINT_WEIGHT);
 		double c3 = a.getCore().getSetting(Setting.DISTANCE_WEIGHTS_WEIGHT);
@@ -483,7 +470,7 @@ public class Genome implements Cloneable, Network {
 
 	private double fitness = -1;
 
-	public double calculateFitness() {
+	private double calculateFitness() {
 		this.fitness = this.core.getFitnessCalculator().getFitness(this);
 
 		if (this.fitness > this.getSpecies().getHighestFitness()) {

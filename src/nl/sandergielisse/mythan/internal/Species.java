@@ -99,11 +99,6 @@ public class Species {
 			bestPerforming.add(genome);
 		}
 		Collections.sort(bestPerforming, new GenomeSorter());
-
-		//System.out.println("Generation best performing " + bestPerforming.get(0).getFitness() + " has length " + bestPerforming.get(0).getActiveConnections().size() + " and population size is " + this.getPopulationSize());
-		//System.out.println(bestPerforming.get(0));
-		// System.out.println("Generation [" + this.generation + "] worst performing " + bestPerforming.get(bestPerforming.size() - 1).getFitness());
-
 		return bestPerforming;
 	}
 

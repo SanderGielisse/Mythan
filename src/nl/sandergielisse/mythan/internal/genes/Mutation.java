@@ -60,8 +60,6 @@ public class Mutation {
 			int newNodeId = this.genome.getHighestNode() + 1;
 			this.genome.addGene(new Gene(this.genome.getCore().getNextInnovationNumber(), from, newNodeId, 1D, true), null, null);
 			this.genome.addGene(new Gene(this.genome.getCore().getNextInnovationNumber(), newNodeId, to, randomGene.getWeight(), true), null, null);
-
-			// System.out.println("[Mutation] New node added.");
 		}
 
 		/**
@@ -70,7 +68,7 @@ public class Mutation {
 		 */
 		if (Random.success(this.genome.getCore().getSetting(Setting.MUTATION_NEW_CONNECTION_CHANCE))) {
 			try {
-				/* 
+				/** 
 				 * Instead of looping through all possible connections and choosing one from 
 				 * the obtained list, we pick a random connection and hope it doesn't exist
 				 * yet. We do this because once the network gets bigger, looping through all
@@ -102,8 +100,6 @@ public class Mutation {
 
 				// add it to the network
 				genome.addGene(new Gene(this.genome.getCore().getNextInnovationNumber(), maybeNew.getFrom(), maybeNew.getTo(), Random.random(-1, 1), true), null, null);
-
-				// System.out.println("[Mutation] New connection added.");
 			} catch (MutationFailedException e) {
 				// System.out.println("Mutation Failed: " + e.getMessage());
 			}

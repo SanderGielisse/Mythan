@@ -18,17 +18,17 @@ package nl.sandergielisse.mythan;
 public enum Setting {
 
 	/**
-	 * There is a 75% chance that a gene which is disabled in one of the parents is disabled in the child.
+	 * There is a chance that a gene which is disabled in one of the parents is disabled in the child.
 	 */
 	GENE_DISABLE_CHANCE(0.75),
 
 	/**
-	 * There is a 80% chance that a gene is mutated when copied.
+	 * There is a chance that a gene is mutated when copied.
 	 */
 	MUTATION_WEIGHT_CHANCE(0.80),
 
 	/**
-	 * There is a 10% chance that a weight mutation get's an entire new random weight value.
+	 * There is a chance that a weight mutation get's an entire new random weight value.
 	 */
 	MUTATION_WEIGHT_RANDOM_CHANCE(0.10),
 
@@ -77,8 +77,7 @@ public enum Setting {
 	 */
 	BREED_CROSS_CHANCE(0.75),
 
-	MUTATION_WEIGHT_CHANCE_RANDOM_RANGE(5.0),
-	;
+	MUTATION_WEIGHT_CHANCE_RANDOM_RANGE(5.0),;
 
 	private final double defaultSetting;
 

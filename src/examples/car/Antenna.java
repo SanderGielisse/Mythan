@@ -59,9 +59,6 @@ public class Antenna {
 	public static final Color ROAD_COLOR = new Color(255, 174, 0);
 
 	public double getFreeDistance(BufferedImage background) {
-
-		// System.out.println("X " + this.getCarLocation().getX() + " Y " + this.getCarLocation().getY());
-
 		double totalAngle = this.carLocation.getAngle() + this.angle;
 		double startX = this.getCarLocation().getX();
 		double startY = this.getCarLocation().getY();
@@ -79,7 +76,7 @@ public class Antenna {
 				double distX = this.getCarLocation().getX() - startX;
 				double distY = this.getCarLocation().getY() - startY;
 
-				return Math.sqrt(distX * distX + distY * distY); // correction
+				return Math.sqrt(distX * distX + distY * distY);
 			}
 		}
 	}

@@ -51,9 +51,6 @@ public class Car extends JFrame implements Runnable {
 			String nextLine = input.nextLine();
 
 			input.close();
-			/**
-			 * User wants to play him/herself.
-			 */
 			int interval = -1;
 
 			try {

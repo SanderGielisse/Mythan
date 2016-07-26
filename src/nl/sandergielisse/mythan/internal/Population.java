@@ -53,8 +53,6 @@ public class Population {
 			}
 		}
 
-		// System.out.println("New species created for generation now " + this.getSpecies().size() + " species active");
-
 		Species ge = new Species(genome);
 		this.getSpecies().add(ge);
 

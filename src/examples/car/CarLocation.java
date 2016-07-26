@@ -105,9 +105,6 @@ public class CarLocation {
 
 		this.x += dx;
 		this.y += dy;
-
-		// System.out.println("X " + x);
-		// System.out.println("Y " + y);
 	}
 
 	public boolean isAlive(BufferedImage background) {
