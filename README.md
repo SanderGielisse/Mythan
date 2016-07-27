@@ -6,7 +6,7 @@ I started this project out of interest for neural networks. I got inspired by th
 Please note, this library uses the NEAT algorithm, not the HyperNEAT algorithm.
 
 # Examples
-So far, I've made two examples, which you can find in the /src/examples folder.
+So far, I've made two examples, which you can find in the /src/examples folder. They are described below.
 
 Car
 =========
