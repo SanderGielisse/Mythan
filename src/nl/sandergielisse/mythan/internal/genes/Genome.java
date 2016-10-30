@@ -417,6 +417,7 @@ public class Genome implements Cloneable, Network {
 		double disjoint = 0; // use double so it won't be used as an int in the formula
 		double excess = 0; // use double so it won't be used as an int in the formula
 
+		List<Double> weights = new ArrayList<>();
 		for (int i = 1; i <= longestLength; i++) {
 			Gene aa = longest.getGene(i);
 			Gene bb = shortest.getGene(i);
@@ -430,13 +431,6 @@ public class Genome implements Cloneable, Network {
 					excess++;
 				}
 			}
-		}
-
-		List<Double> weights = new ArrayList<>();
-		for (int i = 1; i <= longestLength; i++) {
-			Gene aa = longest.getGene(i);
-			Gene bb = shortest.getGene(i);
-
 			if (aa != null && bb != null) {
 				// matching gene
 				double distance = Math.abs(aa.getWeight() - bb.getWeight());
