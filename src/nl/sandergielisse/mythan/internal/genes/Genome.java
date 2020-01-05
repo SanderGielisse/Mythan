@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import nl.sandergielisse.mythan.BackTraceTask;
 import nl.sandergielisse.mythan.Network;
@@ -112,6 +113,8 @@ public class Genome implements Cloneable, Network {
 
 	public List<Integer> getAllNodes() {
 		List<Integer> ids = new ArrayList<>();
+		ids.addAll(this.inputNodes);
+		ids.addAll(this.outputNodes);
 		for (Gene gene : this.getGenes()) {
 			if (!ids.contains(gene.getFrom())) {
 				ids.add(gene.getFrom());
@@ -120,8 +123,7 @@ public class Genome implements Cloneable, Network {
 				ids.add(gene.getTo());
 			}
 		}
-		Collections.sort(ids);
-		return ids;
+		return ids.stream().sorted().distinct().collect(Collectors.toList());
 	}
 
 	public boolean isHiddenNode(int node) {
