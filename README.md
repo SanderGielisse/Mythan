@@ -1,3 +1,5 @@
+Note that this project was done by me during high school at the age of 17, so there might be mistakes and differences from the original paper.
+
 # Mythan
 Mythan is a single-threaded Java implementation of the Neuroevolution of Augmenting Topologies algorithm (NEAT) as described by Kenneth O. Stanley and Risto Miikkulainen. You can find their paper [here](http://nn.cs.utexas.edu/downloads/papers/stanley.ec02.pdf). 
 
